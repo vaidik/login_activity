@@ -1,5 +1,27 @@
 <?php
 
+/**
+ * Implementation of hook_help.
+ */
+function login_activity_help($path, $arg) {
+	$output = '';
+
+	if ($path = 'admin/help#login_activity') {
+		$output .= 'This module logs login activity of every user on your Drupal installation. Everytime a user logs in to your website, the login activity is logged in the database. The module logs the following information:';
+		$output .= '<ul>';
+			$output .= '<li>UID of the user.</li>';
+			$output .= '<li>$_SERVER[\'HTTP_USER_AGENT\'] string.</li>';
+			$output .= '<li>Hostname (IP address) of the user.</li>';
+			$output .= '<li>UNIX timestamp.</li>';
+		$output .= '</ul>';
+	}
+
+	return $output;
+}
+
+/**
+ * Implemetation of hook_user_login.
+ */
 function login_activity_user_login(&$edit, $account) {
 	$query = db_insert('login_activity');
 	$query->fields(array(

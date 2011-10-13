@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Implementation of hook_schema.
+ */
 function login_activity_schema() {
 	$schema['login_activity'] = array(
 		'description' => 'The table to store login activity of Drupal users.',
@@ -17,8 +20,8 @@ function login_activity_schema() {
 				'not null' => TRUE,
 				'default' => 0,
 			),
-			'access_type' => array(
-				'description' => t('The media used for this activity (session).'),
+			'host_user_agent' => array(
+				'description' => t('$_SERVER["HOST_USER_AGENT"] string. This can be used with get_browser() in PHP.'),
 				'type' => 'varchar',
 				'length' => 256,
 				'not null' => TRUE,
