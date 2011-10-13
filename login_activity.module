@@ -1,3 +1,13 @@
 <?php
 
+function login_activity_user_login(&$edit, $account) {
+	$query = db_insert('login_activity');
+	$query->fields(array(
+		'uid' => $account->uid,
+		'access_type' => $_SERVER['HTTP_USER_AGENT'],
+		'hostname' => $_SERVER['REMOTE_ADDR'],
+		'timestamp' => time(),
+	));
 
+	$query->execute();
+}
