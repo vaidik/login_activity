@@ -20,7 +20,7 @@ function login_activity_schema() {
 			'access_type' => array(
 				'description' => t('The media used for this activity (session).'),
 				'type' => 'varchar',
-				'length' => 64,
+				'length' => 256,
 				'not null' => TRUE,
 				'default' => '',
 			),
