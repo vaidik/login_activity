@@ -45,7 +45,7 @@ function login_activity_permission() {
 		),
 		'administer login activity' => array(
 			'title' => t('Administer login activity'),
-			'description' => t('Change configurations of this module. View login activity of other users as well.'),
+			'description' => t('Change configurations of this module. View login activity of other users.'),
 		),
 	);
 }
@@ -79,6 +79,19 @@ function login_activity_view_user_activity($uid = NULL) {
 
 	if (!$uid) {
 		return FALSE;
+	}
+
+	global $user;
+	if ($uid != $user->uid && !user_access('administer login activity')) {
+		drupal_set_message(t('Access denied.'), 'error');
+		drupal_set_title($user->name);
+		return t('You don\'t have rights to get details of other users.');
+	}
+
+	if (!user_load($uid)) {
+		drupal_set_message(t('User does not exist.'), 'error');
+		drupal_set_title(t('Login Activity'));
+		return t('This user does not exist. Make sure that you are providing the correct UID.');
 	}
 
 	$variables = array();
