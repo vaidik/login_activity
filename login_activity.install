@@ -8,34 +8,34 @@ function login_activity_schema() {
 		'description' => 'The table to store login activity of Drupal users.',
 		'fields' => array(
 			'aid' => array(
-				'description' => t('The primary identifier for an activity (session).'),
+				'description' => 'The primary identifier for an activity (session).',
 				'type' => 'serial',
 				'unsigned' => TRUE,
 				'not null' => TRUE,
 			),
 			'uid' => array(
-				'description' => t('The {users}.uid corresponding to a session, or 0 for anonymous user.'),
+				'description' => 'The {users}.uid corresponding to a session, or 0 for anonymous user.',
 				'type' => 'int',
 				'unsigned' => TRUE,
 				'not null' => TRUE,
 				'default' => 0,
 			),
 			'host_user_agent' => array(
-				'description' => t('$_SERVER["HOST_USER_AGENT"] string. This can be used with get_browser() in PHP.'),
+				'description' => '$_SERVER["HOST_USER_AGENT"] string. This can be used with get_browser() in PHP.',
 				'type' => 'varchar',
 				'length' => 256,
 				'not null' => TRUE,
 				'default' => '',
 			),
 			'hostname' => array(
-				'description' => t('The IP address that was used for this session.'),
+				'description' => 'The IP address that was used for this session.',
 				'type' => 'varchar',
 				'length' => 128,
 				'not null' => TRUE,
 				'default' => '',
 			),
 			'timestamp' => array(
-				'description' => t('The UNIX timestamp when the session was started.'),
+				'description' => 'The UNIX timestamp when the session was started.',
 				'type' => 'int',
 				'not null' => TRUE,
 				'default' => 0,
@@ -58,12 +58,4 @@ function login_activity_schema() {
 	);
 
 	return $schema;
-}
-
-function login_activity_install() {
-	file_save_data('test');
-}
-
-function login_activity_uninstall() {
-	file_save_data('test2');
 }

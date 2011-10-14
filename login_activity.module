@@ -6,7 +6,7 @@
 function login_activity_help($path, $arg) {
 	$output = '';
 
-	if ($path = 'admin/help#login_activity') {
+	if ($path == 'admin/help#login_activity') {
 		$output .= 'This module logs login activity of every user on your Drupal installation. Everytime a user logs in to your website, the login activity is logged in the database. The module logs the following information:';
 		$output .= '<ul>';
 			$output .= '<li>UID of the user.</li>';
@@ -26,10 +26,87 @@ function login_activity_user_login(&$edit, $account) {
 	$query = db_insert('login_activity');
 	$query->fields(array(
 		'uid' => $account->uid,
-		'access_type' => $_SERVER['HTTP_USER_AGENT'],
+		'host_user_agent' => $_SERVER['HTTP_USER_AGENT'],
 		'hostname' => $_SERVER['REMOTE_ADDR'],
 		'timestamp' => time(),
 	));
 
 	$query->execute();
+}
+
+/**
+ * Implementation of hook_permission.
+ */
+function login_activity_permission() {
+	return array(
+		'view login activity' => array(
+			'title' => t('View login activity'),
+			'description' => t('Allow user to view login activity of own account.'),
+		),
+	);
+}
+
+/**
+ * Implementation of hook_menu.
+ */
+function login_activity_menu() {
+	$menu = array();
+
+	$menu['user/%/login_activity'] = array(
+		'title' => t('Account Activity'),
+		'description' => t('This page provides information about previous activities on the logged in account.'),
+		'page callback' => 'login_activity_view_user_activity',
+		'page arguments' => array(1),
+		'access callback' => 'user_access',
+		'access arguments' => array('view login activity'),
+		'type' => MENU_LOCAL_TASK,
+	);
+
+	return $menu;
+}
+
+function login_activity_view_user_activity($uid = NULL) {
+	$output = '';
+
+	if (!$uid) {
+		return FALSE;
+	}
+
+	$variables = array();
+
+	$variables['header'] = array(
+		array(
+			'data' => t('Date & Time'),
+			'field' => 'timestamp',
+			'sort' => 'desc',
+		),
+		array(
+			'data' => t('IP Address'),
+			'field' => 'hostname',
+		),
+		t('HTTP User Agent'),
+	);
+	
+	$query = db_select('login_activity', 'l');
+	$query->condition('l.uid', $uid, '=')
+				->fields('l', array('host_user_agent', 'hostname', 'timestamp'))
+				->range(0, 20)
+				->extend('TableSort')
+				->orderByHeader($variables['header']);
+
+	$result = $query->execute();
+
+	foreach($result as $row) {
+		$variables['rows'][] = array(
+			'data' => array(
+				$row->timestamp,
+				$row->hostname,
+				$row->host_user_agent,
+			),
+		);
+	}
+	
+	$output = theme('table', $variables);
+
+	return $output;
 }

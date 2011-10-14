@@ -1,2 +1,3 @@
 name = Login Activity
+description = Logs login activity of all users and provides features for displaying them so that users are aware of when and where their account was used.
 core = 7.x
