@@ -39,9 +39,13 @@ function login_activity_user_login(&$edit, $account) {
  */
 function login_activity_permission() {
 	return array(
-		'view login activity' => array(
-			'title' => t('View login activity'),
+		'view own login activity' => array(
+			'title' => t('View own login activity'),
 			'description' => t('Allow user to view login activity of own account.'),
+		),
+		'administer login activity' => array(
+			'title' => t('Administer login activity'),
+			'description' => t('Change configurations of this module. View login activity of other users as well.'),
 		),
 	);
 }
@@ -58,13 +62,18 @@ function login_activity_menu() {
 		'page callback' => 'login_activity_view_user_activity',
 		'page arguments' => array(1),
 		'access callback' => 'user_access',
-		'access arguments' => array('view login activity'),
+		'access arguments' => array('view own login activity'),
 		'type' => MENU_LOCAL_TASK,
 	);
 
 	return $menu;
 }
 
+/**
+ * Page callback for viewing user-specific login activity.
+ * @TODO
+ * - Check if $uid is the same as global $user->uid. If not, then check for user_access('admin rigths for login activity')
+ */
 function login_activity_view_user_activity($uid = NULL) {
 	$output = '';
 
